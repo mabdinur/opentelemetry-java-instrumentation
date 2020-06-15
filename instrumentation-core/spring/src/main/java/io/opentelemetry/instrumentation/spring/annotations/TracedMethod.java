@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Traced specifies the annotated method should be included in the Trace.
  *
- * @since 0.16.0
+ * @since 0.5.0
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

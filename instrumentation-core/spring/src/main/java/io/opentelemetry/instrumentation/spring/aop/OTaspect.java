@@ -7,13 +7,14 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import io.opentelemetry.instrumentation.spring.annotations.TracedClass;
 import io.opentelemetry.instrumentation.spring.annotations.TracedMethod;
 import io.opentelemetry.trace.Tracer;
-// import org.springframework.context.annotation.Configuration;
-// import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Aspect
+@Component
 public class OTaspect {
 
   public static final Logger LOG = Logger.getLogger(OTaspect.class.getName());
@@ -22,7 +23,7 @@ public class OTaspect {
   private Tracer tracer;
 
   @Around("@annotation(io.opentelemetry.instrumentation.spring.annotations.TracedMethod)")
-  public Object tracedMethod(final ProceedingJoinPoint pjp) throws Throwable {
+  public Object tracedClass(final ProceedingJoinPoint pjp) throws Throwable {
 
     MethodSignature signature = (MethodSignature) pjp.getSignature();
     Method method = signature.getMethod();

@@ -1,19 +1,11 @@
 package io.opentelemetry.instrumentation.spring.aop;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.beans.factory.annotation.Autowired;
-import io.opentelemetry.common.AttributeValue;
-import io.opentelemetry.context.Scope;
 import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Status;
 import io.opentelemetry.trace.Tracer;
 
 public final class Handler {
-
-  // @Autowired
-  // private Tracer tracer;
   
   public static Object proceed(ProceedingJoinPoint pjp, Tracer tracer, String methodName,
       boolean isEvent) throws Throwable {
