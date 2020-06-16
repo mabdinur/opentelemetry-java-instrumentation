@@ -9,7 +9,7 @@ import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.trace.Tracer;
 
-@Configuration
+//@Configuration
 public class OtelConfig {
 
   private static final String TRACER_NAME = "open-telemetry-tracer";
@@ -19,7 +19,6 @@ public class OtelConfig {
     final Tracer tracer = OpenTelemetry.getTracer(TRACER_NAME);
     SpanProcessor logProcessor = SimpleSpanProcessor.newBuilder(new LoggingSpanExporter()).build();
     OpenTelemetrySdk.getTracerProvider().addSpanProcessor(logProcessor);
-    
     return tracer;
   }
 }

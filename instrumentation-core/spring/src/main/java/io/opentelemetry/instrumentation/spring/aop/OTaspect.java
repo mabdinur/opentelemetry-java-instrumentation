@@ -14,7 +14,7 @@ import io.opentelemetry.instrumentation.spring.annotations.TracedMethod;
 import io.opentelemetry.trace.Tracer;
 
 @Aspect
-@Component
+@Configuration
 public class OTaspect {
 
   public static final Logger LOG = Logger.getLogger(OTaspect.class.getName());
