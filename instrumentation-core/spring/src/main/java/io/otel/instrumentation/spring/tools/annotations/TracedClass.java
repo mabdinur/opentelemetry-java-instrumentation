@@ -1,4 +1,4 @@
-package io.opentelemetry.instrumentation.spring.annotations;
+package io.otel.instrumentation.spring.tools.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 /**
  * Traced specifies the annotated method should be included in the Trace.
  *
- * @since 0.5.0
+ * @since 0.16.0
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TracedMethod {
+public @interface TracedClass {
 
   /**
    * The optional custom span name.

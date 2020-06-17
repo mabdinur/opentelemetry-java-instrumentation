@@ -1,9 +1,11 @@
-package io.opentelemetry.instrumentation.spring.annotations;
+package io.otel.instrumentation.spring.tools.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Traced specifies the annotated method should be included in the Trace.
@@ -12,8 +14,9 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TracedClass {
-
+//@Configuration
+//@ComponentScan(basePackages = "io.otel.instrumentation.spring.tools")
+public @interface Config {
   /**
    * The optional custom span name.
    *
@@ -21,5 +24,5 @@ public @interface TracedClass {
    *     span name
    */
   String name() default "";
-  boolean isEvent() default false;
+  boolean includingLoggingExporter() default true;
 }

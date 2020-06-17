@@ -1,4 +1,4 @@
-package io.opentelemetry.instrumentation.spring.autoconfig;
+package io.otel.instrumentation.spring.tools.autoconfig;
 
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +14,7 @@ import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Tracer;
 import io.opentelemetry.trace.TracingContextUtils;
 
-//@Component
+@Component
 public class TraceInterceptor implements HandlerInterceptor {
 
   private static final Logger LOG = Logger.getLogger(TraceInterceptor.class.getName());

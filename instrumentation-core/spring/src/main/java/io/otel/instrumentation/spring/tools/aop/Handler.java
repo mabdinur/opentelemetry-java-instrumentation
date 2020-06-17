@@ -1,4 +1,4 @@
-package io.opentelemetry.instrumentation.spring.aop;
+package io.otel.instrumentation.spring.tools.aop;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import io.opentelemetry.trace.Span;

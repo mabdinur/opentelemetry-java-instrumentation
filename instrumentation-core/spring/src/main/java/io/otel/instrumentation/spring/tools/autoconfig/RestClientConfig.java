@@ -1,30 +1,33 @@
-package io.opentelemetry.instrumentation.spring.autoconfig;
+package io.otel.instrumentation.spring.tools.autoconfig;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
-//@Configuration
+@Configuration
 public class RestClientConfig {
 
   @Autowired
   RestTemplateHeaderModifierInterceptor restTemplateHeaderModifierInterceptor;
   
-  @Autowired(required=false)
   RestTemplate restTemplate;
+  
+  @Autowired(required=false)
+  public RestClientConfig(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
+  
+  public RestClientConfig() {
+    restTemplate = new RestTemplate();
+  }
 
   @Bean
-  public RestTemplate restTemplate(RestTemplate restTemplate) {
+  public RestTemplate restTemplate() {
     
-    if(restTemplate == null) {
-      restTemplate = new RestTemplate();
-    }
-
     List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
     if (interceptors.isEmpty()) {
       interceptors = new ArrayList<>();
