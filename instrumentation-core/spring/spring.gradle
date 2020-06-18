@@ -12,7 +12,6 @@ apply from: "$rootDir/gradle/java.gradle"
 sourceCompatibility = '8'
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -21,6 +20,7 @@ dependencies {
 	compileOnly deps.opentelemetryApi
 	compileOnly	deps.opentelemetrySdk 
 	compileOnly "io.opentelemetry:opentelemetry-exporters-logging:0.5.0"
+	implementation 'org.aspectj:aspectjweaver:1.9.5'
 }
 
 test {
