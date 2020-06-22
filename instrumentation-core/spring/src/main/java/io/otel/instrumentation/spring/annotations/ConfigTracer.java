@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 0.5.0
  */
 @Configuration
-@ComponentScan(basePackages = "io.otel.instrumentation.spring.tools")
+@ComponentScan(basePackages = "io.otel.instrumentation.spring")
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigTracer {

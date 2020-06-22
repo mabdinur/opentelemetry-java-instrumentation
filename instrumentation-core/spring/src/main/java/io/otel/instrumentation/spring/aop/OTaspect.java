@@ -36,7 +36,7 @@ public class OTaspect {
 
   @Autowired private Tracer tracer;
 
-  @Pointcut("within(@io.otel.instrumentation.spring.tools.annotations.TracedClass *)")
+  @Pointcut("within(@io.otel.instrumentation.spring.annotations.TracedClass *)")
   public void beanAnnotatedWithTracedClass() {}
 
   @Pointcut("execution(public * *(..))")
@@ -55,7 +55,7 @@ public class OTaspect {
     return Handler.proceed(pjp, tracer, className, tracedClass.isEvent());
   }
 
-  @Around("@annotation(io.otel.instrumentation.spring.tools.annotations.TracedMethod)")
+  @Around("@annotation(io.otel.instrumentation.spring.annotations.TracedMethod)")
   public Object tracedMethod(final ProceedingJoinPoint pjp) throws Throwable {
     MethodSignature signature = (MethodSignature) pjp.getSignature();
     Method method = signature.getMethod();

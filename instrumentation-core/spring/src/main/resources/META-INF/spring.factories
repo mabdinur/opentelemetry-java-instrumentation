@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.otel.instrumentation.spring.tracer.OtelConfig,\
+io.otel.instrumentation.spring.autoconfig.RestClientConfig,\
+io.otel.instrumentation.spring.autoconfig.InterceptorConfig

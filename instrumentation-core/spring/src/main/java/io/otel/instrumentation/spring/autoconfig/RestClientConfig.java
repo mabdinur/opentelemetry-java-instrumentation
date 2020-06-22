@@ -15,40 +15,83 @@
  */
 package io.otel.instrumentation.spring.autoconfig;
 
+import io.grpc.Context;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.context.propagation.HttpTextFormat;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@ConditionalOnClass(RestTemplate.class)
 public class RestClientConfig {
 
-  @Autowired RestTemplateHeaderModifierInterceptor restTemplateHeaderModifierInterceptor;
+  @Autowired private Tracer tracer;
 
-  RestTemplate restTemplate;
+  class RestTemplateHeaderModifierInterceptor implements ClientHttpRequestInterceptor {
 
-  @Autowired(required = false)
-  public RestClientConfig(RestTemplate restTemplate) {
-    this.restTemplate = restTemplate;
+    private final Logger LOG =
+        Logger.getLogger(RestTemplateHeaderModifierInterceptor.class.getName());
+
+    private HttpTextFormat.Setter<HttpRequest> setter =
+        new HttpTextFormat.Setter<HttpRequest>() {
+          @Override
+          public void set(HttpRequest carrier, String key, String value) {
+            carrier.getHeaders().set(key, value);
+          }
+        };
+
+    @Override
+    public ClientHttpResponse intercept(
+        HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+
+      Span currentSpan = tracer.getCurrentSpan();
+      currentSpan.addEvent("External request sent");
+
+      OpenTelemetry.getPropagators().getHttpTextFormat().inject(Context.current(), request, setter);
+
+      ClientHttpResponse response = execution.execute(request, body);
+
+      LOG.info(String.format("Request sent from ClientHttpRequestInterceptor"));
+
+      return response;
+    }
   }
 
-  public RestClientConfig() {
-    restTemplate = new RestTemplate();
+  @Autowired
+  @ConditionalOnBean(RestTemplate.class)
+  public void restTemplate(RestTemplate restTemplate) {
+    setInterceptor(restTemplate);
   }
 
   @Bean
+  @ConditionalOnMissingBean(type = "org.springframework.web.client.RestTemplate")
   public RestTemplate restTemplate() {
+    RestTemplate restTemplate = new RestTemplate();
+    setInterceptor(restTemplate);
+    return restTemplate;
+  }
 
+  private void setInterceptor(RestTemplate restTemplate) {
     List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
     if (interceptors.isEmpty()) {
       interceptors = new ArrayList<>();
     }
-    interceptors.add(restTemplateHeaderModifierInterceptor);
+    interceptors.add(new RestTemplateHeaderModifierInterceptor());
     restTemplate.setInterceptors(interceptors);
-
-    return restTemplate;
   }
 }
