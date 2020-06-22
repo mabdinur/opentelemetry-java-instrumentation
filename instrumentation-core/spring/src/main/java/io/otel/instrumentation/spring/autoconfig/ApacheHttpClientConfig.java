@@ -9,7 +9,6 @@ import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 import io.grpc.Context;
 import io.opentelemetry.OpenTelemetry;
@@ -18,7 +17,7 @@ import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Tracer;
 
 @Configuration
-@ConditionalOnClass(HttpRequest.class)
+@ConditionalOnBean(HttpRequest.class)
 public class ApacheHttpClientConfig {
 
   @Autowired private Tracer tracer;
@@ -47,7 +46,6 @@ public class ApacheHttpClientConfig {
   }
 
   @Autowired
-  @ConditionalOnBean(AbstractHttpClient.class)
   public void restTemplate(AbstractHttpClient abstractHttpClient) {
     abstractHttpClient.addRequestInterceptor(new ApacheClientInterceptor());
   }

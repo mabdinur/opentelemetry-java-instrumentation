@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpRequest;
@@ -38,6 +39,7 @@ import io.opentelemetry.trace.Tracer;
 
 @Configuration
 @ConditionalOnClass(RestTemplate.class)
+@ConditionalOnProperty(value = "opentelemetry.spring.restTemplateTraceEnabled", matchIfMissing = true)
 public class RestTemplateClientConfig {
   
   @Autowired private Tracer tracer;

@@ -9,7 +9,9 @@ import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.context.propagation.HttpTextFormat;
 import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Tracer;
+import org.springframework.stereotype.Component;
 
+@Component
 public class WebClientConfig {
 
   @Autowired
@@ -38,7 +40,7 @@ public class WebClientConfig {
     };
   }
   
-  public static ExchangeFilterFunction otelAddTraceFilter(Tracer tracer) {
+  public ExchangeFilterFunction otelAddTraceFilter(Tracer tracer) {
     return (clientRequest, next) -> {
       Span currentSpan = tracer.getCurrentSpan();
       currentSpan.addEvent("External request sent");

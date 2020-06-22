@@ -15,9 +15,10 @@ public class HibernateInterceptorConfig {
      * 
      */
     private static final long serialVersionUID = 1L;
-
+    
     @Override
     public void afterTransactionCompletion(Transaction tx) {
+      tx.getStatus();
     }
 
     @Override

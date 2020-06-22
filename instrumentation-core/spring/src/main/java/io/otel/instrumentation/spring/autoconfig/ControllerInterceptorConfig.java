@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,7 +33,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-// @PropertySource("classpath:application.properties")
+@ConditionalOnProperty(value = "opentelemetry.spring.controllerTraceEnabled", matchIfMissing = true)
 public class ControllerInterceptorConfig implements WebMvcConfigurer {
 
   @Autowired Tracer tracer;
