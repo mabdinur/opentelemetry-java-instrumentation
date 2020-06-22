@@ -15,11 +15,6 @@
  */
 package io.otel.instrumentation.spring.autoconfig;
 
-import io.grpc.Context;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.context.propagation.HttpTextFormat;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,17 +30,22 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
+import io.grpc.Context;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.context.propagation.HttpTextFormat;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 
 @Configuration
 @ConditionalOnClass(RestTemplate.class)
-public class RestClientConfig {
-
+public class RestTemplateClientConfig {
+  
   @Autowired private Tracer tracer;
-
-  class RestTemplateHeaderModifierInterceptor implements ClientHttpRequestInterceptor {
-
+  
+  class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
+    
     private final Logger LOG =
-        Logger.getLogger(RestTemplateHeaderModifierInterceptor.class.getName());
+        Logger.getLogger(RestTemplateInterceptor.class.getName());
 
     private HttpTextFormat.Setter<HttpRequest> setter =
         new HttpTextFormat.Setter<HttpRequest>() {
@@ -66,7 +66,7 @@ public class RestClientConfig {
 
       ClientHttpResponse response = execution.execute(request, body);
 
-      LOG.info(String.format("Request sent from ClientHttpRequestInterceptor"));
+      LOG.info(String.format("Request sent from RestTemplateInterceptor"));
 
       return response;
     }
@@ -91,7 +91,7 @@ public class RestClientConfig {
     if (interceptors.isEmpty()) {
       interceptors = new ArrayList<>();
     }
-    interceptors.add(new RestTemplateHeaderModifierInterceptor());
+    interceptors.add(new RestTemplateInterceptor());
     restTemplate.setInterceptors(interceptors);
   }
 }

@@ -33,7 +33,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 // @PropertySource("classpath:application.properties")
-public class InterceptorConfig implements WebMvcConfigurer {
+public class ControllerInterceptorConfig implements WebMvcConfigurer {
 
   @Autowired Tracer tracer;
 

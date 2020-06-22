@@ -15,7 +15,10 @@ apply from: "$rootDir/gradle/java.gradle"
 
 sourceCompatibility = '8'
 
+def grpcVersion = '1.5.0'
+
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -24,6 +27,14 @@ dependencies {
 	compileOnly deps.opentelemetryApi
 	compileOnly	deps.opentelemetrySdk 
 	compileOnly "io.opentelemetry:opentelemetry-exporters-logging:0.5.0"
+	
+	compileOnly group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.0'
+	compileOnly 'org.springframework.boot:spring-boot-starter-webflux'
+    compileOnly 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+    
+    compileOnly 'io.github.lognet:grpc-spring-boot-starter:3.5.5'
+    compileOnly group: 'io.grpc', name: 'grpc-core', version: grpcVersion
+    
 	implementation 'org.aspectj:aspectjweaver:1.9.5'
 }
 
