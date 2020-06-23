@@ -15,10 +15,10 @@
  */
 package io.otel.instrumentation.spring.aop;
 
+import org.aspectj.lang.ProceedingJoinPoint;
 import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Status;
 import io.opentelemetry.trace.Tracer;
-import org.aspectj.lang.ProceedingJoinPoint;
 
 public final class Handler {
 

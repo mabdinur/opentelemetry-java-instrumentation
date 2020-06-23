@@ -1,5 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.otel.instrumentation.spring.config.OpenTelemetryProperties,\
+io.otel.instrumentation.spring.autoconfig.OpenTelemetryProperties,\
 io.otel.instrumentation.spring.tracer.OtelConfig,\
 io.otel.instrumentation.spring.autoconfig.RestTemplateClientConfig,\
 io.otel.instrumentation.spring.autoconfig.ControllerInterceptorConfig,\

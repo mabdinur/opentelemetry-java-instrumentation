@@ -18,7 +18,7 @@ import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Tracer;
 
 @Configuration
-@ConditionalOnBean(HttpRequest.class)
+@ConditionalOnBean(AbstractHttpClient.class)
 @ConditionalOnProperty(prefix="opentelemetry.autoconfig", name="apacheHttpTraceEnabled")
 public class ApacheHttpClientConfig {
 
@@ -48,7 +48,7 @@ public class ApacheHttpClientConfig {
   }
 
   @Autowired
-  public void restTemplate(AbstractHttpClient abstractHttpClient) {
+  public void addApacheClientInterceptor(AbstractHttpClient abstractHttpClient) {
     abstractHttpClient.addRequestInterceptor(new ApacheClientInterceptor());
   }
 }

@@ -15,9 +15,7 @@
  */
 package io.otel.instrumentation.spring.annotations;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -25,13 +23,11 @@ import java.lang.annotation.Target;
 /**
  * Traced specifies the annotated method should be included in the Trace.
  *
- * @since 0.5.0
+ * @since 0.16.0
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-public @interface TracedMethod {
+public @interface TraceClass {
 
   /**
    * The optional custom span name.

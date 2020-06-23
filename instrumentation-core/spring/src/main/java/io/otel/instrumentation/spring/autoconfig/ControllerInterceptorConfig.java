@@ -13,12 +13,6 @@
  */
 package io.otel.instrumentation.spring.autoconfig;
 
-import io.grpc.Context;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.context.propagation.HttpTextFormat;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
-import io.opentelemetry.trace.TracingContextUtils;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,10 +23,15 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import io.grpc.Context;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.context.propagation.HttpTextFormat;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
+import io.opentelemetry.trace.TracingContextUtils;
 
 @Configuration
-@ConditionalOnProperty(prefix = "opentelemetry.autoconfig", name = "controllerTraceEnabled",
-    matchIfMissing = true)
+@ConditionalOnProperty(prefix = "opentelemetry.autoconfig", name = "controllerTraceEnabled")
 public class ControllerInterceptorConfig implements WebMvcConfigurer {
 
   @Autowired
@@ -45,14 +44,6 @@ public class ControllerInterceptorConfig implements WebMvcConfigurer {
         new HttpTextFormat.Getter<HttpServletRequest>() {
           public String get(HttpServletRequest req, String key) {
             return req.getHeader(key);
-          }
-        };
-
-    private HttpTextFormat.Setter<HttpServletResponse> setter =
-        new HttpTextFormat.Setter<HttpServletResponse>() {
-          @Override
-          public void set(HttpServletResponse response, String key, String value) {
-            response.addHeader(key, value);
           }
         };
 
@@ -78,8 +69,6 @@ public class ControllerInterceptorConfig implements WebMvcConfigurer {
 
       Span currentSpan = tracer.getCurrentSpan();
       currentSpan.setAttribute("handler", "post");
-      OpenTelemetry.getPropagators().getHttpTextFormat().inject(Context.current(), response,
-          setter);
       currentSpan.end();
       
       LOG.info("ControllerInterceptor posthandler called");

@@ -2,6 +2,7 @@ package io.otel.instrumentation.spring.autoconfig;
 
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import io.grpc.Context;
@@ -9,7 +10,6 @@ import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.context.propagation.HttpTextFormat;
 import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Tracer;
-import org.springframework.stereotype.Component;
 
 @Component
 public class WebClientConfig {
@@ -40,6 +40,7 @@ public class WebClientConfig {
     };
   }
   
+  //Is this possible? AutoWired with WebClient.Builder
   public ExchangeFilterFunction otelAddTraceFilter(Tracer tracer) {
     return (clientRequest, next) -> {
       Span currentSpan = tracer.getCurrentSpan();

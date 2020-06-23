@@ -1,7 +1,6 @@
-package io.otel.instrumentation.spring.config;
+package io.otel.instrumentation.spring.autoconfig;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 
 @ConfigurationProperties(prefix = "opentelemetry.autoconfig")
 public class OpenTelemetryProperties {
