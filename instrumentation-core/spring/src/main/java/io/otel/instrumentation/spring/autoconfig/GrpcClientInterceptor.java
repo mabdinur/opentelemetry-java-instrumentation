@@ -3,6 +3,7 @@ package io.otel.instrumentation.spring.autoconfig;
 import java.util.logging.Logger;
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
@@ -22,6 +23,7 @@ import io.opentelemetry.trace.Tracer;
  *
  */
 @GRpcGlobalInterceptor
+@ConditionalOnProperty(prefix="opentelemetry.autoconfig", name="grpcClientTraceEnabled")
 public class GrpcClientInterceptor implements ClientInterceptor {
 
   @Autowired

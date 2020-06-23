@@ -1,17 +1,15 @@
 /*
  * Copyright The OpenTelemetry Authors
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.otel.instrumentation.spring.autoconfig;
 
@@ -33,13 +31,15 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ConditionalOnProperty(value = "opentelemetry.spring.controllerTraceEnabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "opentelemetry.autoconfig", name = "controllerTraceEnabled",
+    matchIfMissing = true)
 public class ControllerInterceptorConfig implements WebMvcConfigurer {
 
-  @Autowired Tracer tracer;
+  @Autowired
+  Tracer tracer;
 
-  class TraceInterceptor implements HandlerInterceptor {
-    private final Logger LOG = Logger.getLogger(TraceInterceptor.class.getName());
+  class ControllerInterceptor implements HandlerInterceptor {
+    private final Logger LOG = Logger.getLogger(ControllerInterceptor.class.getName());
 
     private HttpTextFormat.Getter<HttpServletRequest> getter =
         new HttpTextFormat.Getter<HttpServletRequest>() {
@@ -57,63 +57,54 @@ public class ControllerInterceptorConfig implements WebMvcConfigurer {
         };
 
     @Override
-    public boolean preHandle(
-        HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-      Span span;
-      try {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+        Object handler) throws Exception {
 
-        Context context =
-            OpenTelemetry.getPropagators()
-                .getHttpTextFormat()
-                .extract(Context.current(), request, getter);
+      Context context = OpenTelemetry.getPropagators().getHttpTextFormat()
+          .extract(Context.current(), request, getter);
 
-        span =
-            tracer
-                .spanBuilder(request.getRequestURI())
-                .setParent(TracingContextUtils.getSpan(context))
-                .startSpan();
-        span.setAttribute("handler", "pre");
-      } catch (Exception e) {
-        span = tracer.spanBuilder(request.getRequestURI()).startSpan();
-        span.setAttribute("handler", "pre");
-
-        span.addEvent(e.toString());
-        span.setAttribute("warn", true);
-      }
+      Span span = createSpanWithParent(request, context);
+      span.setAttribute("handler", "pre");
       tracer.withSpan(span);
+      
+      LOG.info("ControllerInterceptor prehandle called");
 
-      LOG.info("Pre Handle Called");
       return true;
     }
 
     @Override
-    public void postHandle(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Object handler,
-        ModelAndView modelAndView)
-        throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+        ModelAndView modelAndView) throws Exception {
 
       Span currentSpan = tracer.getCurrentSpan();
       currentSpan.setAttribute("handler", "post");
-      OpenTelemetry.getPropagators()
-          .getHttpTextFormat()
-          .inject(Context.current(), response, setter);
+      OpenTelemetry.getPropagators().getHttpTextFormat().inject(Context.current(), response,
+          setter);
       currentSpan.end();
-      LOG.info("Post Handler Called");
+      
+      LOG.info("ControllerInterceptor posthandler called");
     }
 
     @Override
-    public void afterCompletion(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Object handler,
-        Exception exception)
-        throws Exception {}
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+        Object handler, Exception exception) throws Exception {}
+
+    private Span createSpanWithParent(HttpServletRequest request, Context context) {
+      Span parentSpan = TracingContextUtils.getSpan(context);
+
+      if (parentSpan.getContext().isValid()) {
+        return tracer.spanBuilder(request.getRequestURI()).setParent(parentSpan).startSpan();
+      }
+
+      Span span = tracer.spanBuilder(request.getRequestURI()).startSpan();
+      span.addEvent("Parent Span Not Found");
+
+      return span;
+    }
   }
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(new TraceInterceptor());
+    registry.addInterceptor(new ControllerInterceptor());
   }
 }

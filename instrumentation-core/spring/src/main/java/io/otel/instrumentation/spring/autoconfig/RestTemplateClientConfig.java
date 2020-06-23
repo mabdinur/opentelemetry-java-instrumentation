@@ -39,7 +39,7 @@ import io.opentelemetry.trace.Tracer;
 
 @Configuration
 @ConditionalOnClass(RestTemplate.class)
-@ConditionalOnProperty(value = "opentelemetry.spring.restTemplateTraceEnabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix="opentelemetry.autoconfig", name="restTemplateTraceEnabled")
 public class RestTemplateClientConfig {
   
   @Autowired private Tracer tracer;

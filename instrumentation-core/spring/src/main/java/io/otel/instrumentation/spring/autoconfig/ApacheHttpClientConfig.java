@@ -9,6 +9,7 @@ import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import io.grpc.Context;
 import io.opentelemetry.OpenTelemetry;
@@ -18,6 +19,7 @@ import io.opentelemetry.trace.Tracer;
 
 @Configuration
 @ConditionalOnBean(HttpRequest.class)
+@ConditionalOnProperty(prefix="opentelemetry.autoconfig", name="apacheHttpTraceEnabled")
 public class ApacheHttpClientConfig {
 
   @Autowired private Tracer tracer;

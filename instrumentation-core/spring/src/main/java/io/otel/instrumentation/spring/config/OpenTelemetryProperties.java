@@ -3,29 +3,18 @@ package io.otel.instrumentation.spring.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 
-@PropertySource("classpath:opentelemetry.properties")
-@ConfigurationProperties(prefix="opentelemetry.spring")
+@ConfigurationProperties(prefix = "opentelemetry.autoconfig")
 public class OpenTelemetryProperties {
 
-  private String tracerName = "Otel Tracer";
+  private boolean controllerTraceEnabled = true;
 
-  private boolean controllerTraceEnabled;
+  private boolean restTemplateTraceEnabled = true;
 
-  private boolean restTemplateTraceEnabled;
+  private boolean apacheHttpTraceEnabled = true;
 
-  private boolean apacheHttpTraceEnabled;
+  private boolean webClientTraceEnabled = true;
 
-  private boolean webClientTraceEnabled;
-
-  private boolean grpcClientTraceEnabled;
-
-  public String getTracerName() {
-    return tracerName;
-  }
-
-  public void setTracerName(String tracerName) {
-    this.tracerName = tracerName;
-  }
+  private boolean grpcClientTraceEnabled = true;
 
   public boolean isControllerTraceEnabled() {
     return controllerTraceEnabled;
