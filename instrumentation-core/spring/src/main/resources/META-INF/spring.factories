@@ -5,4 +5,7 @@ io.otel.instrumentation.spring.autoconfig.RestTemplateClientConfig,\
 io.otel.instrumentation.spring.autoconfig.ControllerInterceptorConfig,\
 io.otel.instrumentation.spring.autoconfig.WebClientConfig,\
 io.otel.instrumentation.spring.autoconfig.ApacheHttpClientConfig,\
-io.otel.instrumentation.spring.autoconfig.WebClientConfig
+io.otel.instrumentation.spring.autoconfig.WebClientConfig,\
+io.otel.instrumentation.spring.aop.TraceClassAspect,\
+io.otel.instrumentation.spring.aop.TraceMethodAspect,\
+io.otel.instrumentation.spring.aop.TraceDatabaseAspect

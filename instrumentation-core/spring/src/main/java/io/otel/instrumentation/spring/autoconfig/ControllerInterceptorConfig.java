@@ -55,9 +55,10 @@ public class ControllerInterceptorConfig implements WebMvcConfigurer {
           .extract(Context.current(), request, getter);
 
       Span span = createSpanWithParent(request, context);
-      span.setAttribute("handler", "pre");
-      tracer.withSpan(span);
+      span.addEvent("handler pre");
       
+      tracer.withSpan(span);
+
       LOG.info("ControllerInterceptor prehandle called");
 
       return true;
@@ -65,27 +66,27 @@ public class ControllerInterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-        ModelAndView modelAndView) throws Exception {
-
-      Span currentSpan = tracer.getCurrentSpan();
-      currentSpan.setAttribute("handler", "post");
-      currentSpan.end();
-      
-      LOG.info("ControllerInterceptor posthandler called");
-    }
+        ModelAndView modelAndView) throws Exception {}
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-        Object handler, Exception exception) throws Exception {}
+        Object handler, Exception exception) throws Exception {
+      Span currentSpan = tracer.getCurrentSpan();
+      currentSpan.addEvent("handler afterCompletion");
+      currentSpan.end();
+
+      LOG.info("ControllerInterceptor afterCompletion called");
+    }
 
     private Span createSpanWithParent(HttpServletRequest request, Context context) {
       Span parentSpan = TracingContextUtils.getSpan(context);
-
+      Span.Builder spanBuilder = tracer.spanBuilder(request.getRequestURI()).setSpanKind(Span.Kind.SERVER);
+      
       if (parentSpan.getContext().isValid()) {
-        return tracer.spanBuilder(request.getRequestURI()).setParent(parentSpan).startSpan();
+        return spanBuilder.setParent(parentSpan).startSpan();
       }
-
-      Span span = tracer.spanBuilder(request.getRequestURI()).startSpan();
+  
+      Span span = spanBuilder.startSpan();
       span.addEvent("Parent Span Not Found");
 
       return span;

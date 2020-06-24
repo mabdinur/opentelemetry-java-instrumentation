@@ -34,7 +34,7 @@ import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Tracer;
 
 @Configuration
-@ConditionalOnClass(RestTemplate.class) //TO DO: Change to COnditionalOnBean
+@ConditionalOnBean(RestTemplate.class)
 @ConditionalOnProperty(prefix="opentelemetry.autoconfig", name="restTemplateTraceEnabled")
 public class RestTemplateClientConfig {
   
@@ -56,23 +56,24 @@ public class RestTemplateClientConfig {
     @Override
     public ClientHttpResponse intercept(
         HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+      
+      String spanName = request.getMethodValue() +  " " + request.getURI().toString();
+      Span currentSpan = tracer.spanBuilder(spanName).setSpanKind(Span.Kind.CLIENT).startSpan();
+      
+      try {
+        OpenTelemetry.getPropagators().getHttpTextFormat().inject(Context.current(), request, setter);
+        ClientHttpResponse response = execution.execute(request, body);
+        LOG.info(String.format("Request sent from RestTemplateInterceptor"));
 
-      Span currentSpan = tracer.getCurrentSpan();
-      currentSpan.addEvent("External request sent");
-
-      OpenTelemetry.getPropagators().getHttpTextFormat().inject(Context.current(), request, setter);
-
-      ClientHttpResponse response = execution.execute(request, body);
-
-      LOG.info(String.format("Request sent from RestTemplateInterceptor"));
-
-      return response;
+        return response;
+      }finally {
+        currentSpan.end();
+      }
     }
   }
-
+  
   @Autowired
-  @ConditionalOnBean(RestTemplate.class)
-  public void addRestTemplateInterceptor(RestTemplate restTemplate) {
+  public void restTemplate(RestTemplate restTemplate) {
     restTemplate.getInterceptors().add(new RestTemplateInterceptor());
   }
 

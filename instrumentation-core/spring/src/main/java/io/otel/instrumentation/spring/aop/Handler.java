@@ -20,7 +20,7 @@ import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Status;
 import io.opentelemetry.trace.Tracer;
 
-public final class Handler {
+public class Handler {
 
   public static Object proceed(
       ProceedingJoinPoint pjp, Tracer tracer, String methodName, boolean isEvent) throws Throwable {
@@ -55,6 +55,10 @@ public final class Handler {
       errorHandler(span, t);
       throw t;
     }
+  }
+  
+  public static void test() {
+    System.out.println("TEST in HANDLER in SPring inst RAN ");
   }
 
   private static void errorHandler(Span span, Throwable t) {

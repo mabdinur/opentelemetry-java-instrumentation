@@ -40,7 +40,6 @@ public class WebClientConfig {
     };
   }
   
-  //Is this possible? AutoWired with WebClient.Builder
   public ExchangeFilterFunction otelAddTraceFilter(Tracer tracer) {
     return (clientRequest, next) -> {
       Span currentSpan = tracer.getCurrentSpan();
