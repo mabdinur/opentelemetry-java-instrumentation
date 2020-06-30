@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.opentelemetry.spring.autoconfigure.trace.TracerAutoConfiguration,\
+io.opentelemetry.spring.autoconfigure.trace.httpclients.ApacheHttpClientAutoConfiguration,\
+io.opentelemetry.spring.autoconfigure.trace.httpclients.RestTemplateAutoConfiguration,\
+io.opentelemetry.spring.autoconfigure.trace.web.WebMVCFilterAutoConfiguration,\
+io.opentelemetry.spring.autoconfigure.trace.tools.TraceAspectAutoConfiguration
