@@ -27,8 +27,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Wraps requests to servlet or resource in a span. Gets the parent span context from request
@@ -60,7 +58,7 @@ public final class WebMVCFilter implements Filter {
     Span currentSpan = createSpanWithParent(req, context);
 
     try (Scope scope = tracer.withSpan(currentSpan)) {
-      currentSpan.addEvent("handler afterCompletion");
+      currentSpan.addEvent("doFilter");
       chain.doFilter(req, response);
     } finally {
       currentSpan.end();

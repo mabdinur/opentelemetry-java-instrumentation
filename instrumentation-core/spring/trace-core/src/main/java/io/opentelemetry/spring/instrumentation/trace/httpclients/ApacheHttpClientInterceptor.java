@@ -24,8 +24,6 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Intercepts outbound Apache HTTP requests and adds the current span context */
 public final class ApacheHttpClientInterceptor implements HttpRequestInterceptor {
@@ -49,7 +47,7 @@ public final class ApacheHttpClientInterceptor implements HttpRequestInterceptor
     Span currentSpan = tracer.getCurrentSpan();
 
     try (Scope scope = tracer.withSpan(currentSpan)) {
-      currentSpan.addEvent("External request sent");
+      currentSpan.addEvent("ApacheHttpClient request sent");
       OpenTelemetry.getPropagators().getHttpTextFormat().inject(Context.current(), request, SETTER);
     }
   }
