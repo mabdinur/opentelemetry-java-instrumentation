@@ -151,7 +151,6 @@ include ':instrumentation:vertx'
 include ':instrumentation:vertx-reactive'
 
 include ':instrumentation-core:aws-sdk:aws-sdk-2.2-core'
-
 include ':instrumentation-core:spring:trace-core'
 
 // exporter adapters
