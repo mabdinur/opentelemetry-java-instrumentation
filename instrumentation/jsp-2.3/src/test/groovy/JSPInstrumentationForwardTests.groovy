@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import com.google.common.io.Files
 import io.opentelemetry.auto.instrumentation.api.MoreTags
 import io.opentelemetry.auto.instrumentation.api.Tags
@@ -524,7 +525,7 @@ class JSPInstrumentationForwardTests extends AgentTestRunner {
           parent()
           operationName expectedOperationName()
           spanKind SERVER
-          errored false
+          errored true
           tags {
             "$MoreTags.NET_PEER_IP" "127.0.0.1"
             "$MoreTags.NET_PEER_PORT" Long
