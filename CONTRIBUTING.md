@@ -65,7 +65,7 @@ still access helper classes from bootstrap classloader.
 #### Agent jar structure
 
 If you now look inside
-`java-agent/build/libs/opentelemetry-javaagent-<version>-all.jar`, you will see the
+`opentelemetry-javaagent/build/libs/opentelemetry-javaagent-<version>-all.jar`, you will see the
 following "clusters" of classes:
 
 - `inst/` - contains `agent-tooling` module and `instrumentation` submodules, loaded and isolated inside
@@ -86,10 +86,23 @@ snapshot builds of the `master` branch. They are available from
 
 Build using Java 11:
 
-```gradle assemble```
+```bash
+java -version
+```
+
+```bash
+./gradlew assemble
+```
+
+and then generate the -all artifact
+
+```bash
+./gradlew :opentelemetry-javaagent:shadowJar
+```
 
 and then you can find the java agent artifact at
-`java-agent/build/lib/opentelemetry-javaagent-<version>-all.jar`.
+
+`opentelemetry-javaagent/build/lib/opentelemetry-javaagent-<version>-all.jar`.
 
 ### Testing
 
@@ -183,9 +196,6 @@ from command line.
 This ensures that Gradle task avoidance and build cache work properly and can greatly reduce
 build time.
 
-Required plugins:
-* [Lombok](https://plugins.jetbrains.com/plugin/6317-lombok-plugin)
-
 Suggested plugins and settings:
 
 * Editor > Code Style > Java/Groovy > Imports
@@ -201,11 +211,11 @@ Suggested plugins and settings:
 
 Approvers:
 
-- [Anuraag Agrawal](https://github.com/anuraaga), AWS
 - [John Watson](https://github.com/jkwatson), New Relic
 
 Maintainers:
 
+- [Anuraag Agrawal](https://github.com/anuraaga), AWS
 - [Nikita Salnikov-Tarnovski](https://github.com/iNikem), Splunk
 - [Trask Stalnaker](https://github.com/trask), Microsoft
 - [Tyler Benson](https://github.com/tylerbenson), DataDog

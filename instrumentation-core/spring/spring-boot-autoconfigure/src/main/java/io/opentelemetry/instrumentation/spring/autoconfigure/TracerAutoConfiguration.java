@@ -36,9 +36,8 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Create an {@link io.opentelemetry.trace.Tracer}.
  *
- * <p>Adds Open Telemetry SpanProcessors to the tracer provider using available exporter beans
- *
- * <p>Sets Sampler probability
+ * <p>If {@code TracerProperties.loggingExporterIsEnabled=True}: Create a simple span processor
+ * using the LoggingSpanExporter
  */
 @Configuration
 @EnableConfigurationProperties(TracerProperties.class)

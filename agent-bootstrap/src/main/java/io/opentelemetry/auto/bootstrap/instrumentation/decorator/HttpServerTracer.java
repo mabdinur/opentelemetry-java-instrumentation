@@ -38,11 +38,14 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // TODO In search for a better home package
-@Slf4j
 public abstract class HttpServerTracer<REQUEST, CONNECTION, STORAGE> {
+
+  private static final Logger log = LoggerFactory.getLogger(HttpServerTracer.class);
+
   public static final String CONTEXT_ATTRIBUTE = "io.opentelemetry.instrumentation.context";
   // Keeps track of the server span for the current trace.
   private static final Context.Key<Span> CONTEXT_SERVER_SPAN_KEY =
@@ -58,20 +61,14 @@ public abstract class HttpServerTracer<REQUEST, CONNECTION, STORAGE> {
     this.tracer = tracer;
   }
 
-  public Span startSpan(REQUEST request, CONNECTION connection, Method origin, String originType) {
+  public Span startSpan(REQUEST request, CONNECTION connection, Method origin) {
     String spanName = spanNameForMethod(origin);
-    return startSpan(request, connection, spanName, originType);
+    return startSpan(request, connection, spanName);
   }
 
-  public Span startSpan(
-      REQUEST request, CONNECTION connection, String spanName, String originType) {
+  public Span startSpan(REQUEST request, CONNECTION connection, String spanName) {
     final Span.Builder builder =
-        tracer
-            .spanBuilder(spanName)
-            .setSpanKind(SERVER)
-            .setParent(extract(request, getGetter()))
-            // TODO Where span.origin.type is defined?
-            .setAttribute("span.origin.type", originType);
+        tracer.spanBuilder(spanName).setSpanKind(SERVER).setParent(extract(request, getGetter()));
 
     Span span = builder.startSpan();
     onConnection(span, connection);
