@@ -1,9 +1,13 @@
+plugins {
+  id "io.freefair.aspectj.post-compile-weaving" version "5.1.0"
+}
+
 ext {
   minJavaVersionForTests = JavaVersion.VERSION_1_8
+  aspectjVersion = '1.9.5'
 }
 
 group = 'io.opentelemetry.instrumentation'
-
 apply from: "$rootDir/gradle/java.gradle"
 apply from: "$rootDir/gradle/publish.gradle"
 
@@ -11,9 +15,12 @@ sourceCompatibility = '8'
 
 dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: versions.springboot
-  api group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springboot
-  //api group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.9'
-  //api group: 'org.aspectj', name: 'aspectjrt', version: '1.8.9'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-logging', version: versions.springboot
+  
+  api deps.opentelemetryApi
+  api group: 'org.aspectj', name: 'aspectjweaver', version: aspectjVersion
+  api group: 'org.aspectj', name: 'aspectjrt', version: aspectjVersion
+  
   annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-autoconfigure-processor', version: versions.springboot
   implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
   
