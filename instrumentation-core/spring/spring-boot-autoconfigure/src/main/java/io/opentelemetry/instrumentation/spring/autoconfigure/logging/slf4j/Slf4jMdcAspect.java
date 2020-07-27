@@ -21,24 +21,26 @@ import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.TracingContextUtils;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
 
 @Aspect
-public final class Sfl4jMdcAspect {
+public final class Slf4jMdcAspect {
   private static final String SPAN_ID = "spanId";
   private static final String TRACE_ID = "traceId";
   private static final String TRACE_FLAGS = "traceFlags";
 
-  @After("execution(* io.opentelemetry.trace.Span.Builder.startSpan(..))")
-  public void addMDCtoSpanStart() throws Throwable {
+  @After("execution(* io.opentelemetry.trace.Span.Builder.startSpan())")
+  public void addMDCtoSpanStart() throws Throwable {    
     setSpanIds();
   }
 
-  @After("execution(* io.opentelemetry.trace.Span.end(..))")
+  @Pointcut("execution(* io.opentelemetry.trace.Span.end(..))")
   public void addMDCtoSpanEnd() throws Throwable {
     MDC.remove(TRACE_ID);
     MDC.remove(SPAN_ID);
     MDC.remove(TRACE_FLAGS);
+    
     setSpanIds();
   }
 
@@ -49,7 +51,6 @@ public final class Sfl4jMdcAspect {
     }
 
     SpanContext spanContext = currentSpan.getContext();
-
     MDC.put(TRACE_ID, spanContext.getTraceId().toLowerBase16());
     MDC.put(SPAN_ID, spanContext.getSpanId().toLowerBase16());
     MDC.put(TRACE_FLAGS, spanContext.getTraceFlags().toLowerBase16());

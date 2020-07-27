@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <configuration>
-
 	<appender name="CONSOLE"
 		class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%X{spanId} %X{traceId}  %X{traceFlags} - %m%n</Pattern>
+			<Pattern>[%X{spanId}, %X{traceId}, %X{traceFlags}] </Pattern>
 		</layout>
 	</appender>
 
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="CONSOLE" />
 	</root>
+	
+	<include resource="org/springframework/boot/logging/logback/base.xml"/>
 </configuration>
