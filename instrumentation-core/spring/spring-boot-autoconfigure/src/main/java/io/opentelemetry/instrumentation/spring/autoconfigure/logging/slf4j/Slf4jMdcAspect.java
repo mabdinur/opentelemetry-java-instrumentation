@@ -21,7 +21,6 @@ import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.TracingContextUtils;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
 
 @Aspect
@@ -30,17 +29,17 @@ public final class Slf4jMdcAspect {
   private static final String TRACE_ID = "traceId";
   private static final String TRACE_FLAGS = "traceFlags";
 
-  @After("execution(* io.opentelemetry.trace.Span.Builder.startSpan())")
-  public void addMDCtoSpanStart() throws Throwable {    
+  @After("execution(io.opentelemetry.trace.DefaultSpan.new(..))")
+  public void addMDCtoSpanStart() throws Throwable {
     setSpanIds();
   }
 
-  @Pointcut("execution(* io.opentelemetry.trace.Span.end(..))")
+  @After("execution(* io.opentelemetry.trace.DefaultSpan.end(..))")
   public void addMDCtoSpanEnd() throws Throwable {
     MDC.remove(TRACE_ID);
     MDC.remove(SPAN_ID);
     MDC.remove(TRACE_FLAGS);
-    
+
     setSpanIds();
   }
 
