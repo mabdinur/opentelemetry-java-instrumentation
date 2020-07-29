@@ -10,7 +10,13 @@ apply from: "$rootDir/gradle/publish.gradle"
 sourceCompatibility = '8'
 
 dependencies { 
-  api group: "org.springframework.boot", name: "spring-boot-starter", version: versions.springboot
+  api(group: "org.springframework.boot", name: "spring-boot-starter", version: versions.springboot){
+  	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+  }
+  
+  api group: "org.springframework.boot", name: 'spring-boot-starter-log4j2', version: versions.springboot
+  api "io.opentelemetry.instrumentation:opentelemetry-log4j-2.13.2:0.7.0-SNAPSHOT"
+  
   api project(':instrumentation-core:spring:spring-boot-autoconfigure')
   api deps.opentelemetryApi
   api deps.opentelemetryLogging
